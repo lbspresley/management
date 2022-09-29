@@ -15,6 +15,9 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "client": "react-scripts start",
+    "server": "cd server && yarn server",
+    "dev:all" : "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "start": "react-scripts start",
     "dev": "react-scripts start --watch",
     "build": "react-scripts build",
@@ -38,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+
+"devDependencies": {
+  "concurrently" : "^4.0.1"
+}
 }
