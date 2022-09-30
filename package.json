@@ -2,11 +2,13 @@
   "name": "management",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:5500",
   "dependencies": {
     "@material-ui/core": "^4.12.4",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "axios": "^0.27.2",
     "clsx": "^1.2.1",
     "material-ui": "^0.20.2",
     "react": "^18.2.0",
@@ -17,7 +19,7 @@
   "scripts": {
     "client": "react-scripts start",
     "server": "cd server && yarn server",
-    "dev:all" : "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
+    "dev:all": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "start": "react-scripts start",
     "dev": "react-scripts start --watch",
     "build": "react-scripts build",
@@ -42,8 +44,7 @@
       "last 1 safari version"
     ]
   },
-
-"devDependencies": {
-  "concurrently" : "^4.0.1"
-}
+  "devDependencies": {
+    "concurrently": "^4.0.1"
+  }
 }

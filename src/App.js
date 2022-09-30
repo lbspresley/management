@@ -12,7 +12,8 @@ import { withStyles } from "@material-ui/core/styles";
 const styles = (theme) => ({
   root: {
     width: "100%",
-    marginTop: theme.spacing.unit * 3,
+    // marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing(3),
     overflowX: "auto",
   },
   table: {
@@ -20,7 +21,7 @@ const styles = (theme) => ({
   },
 });
 
-const customer = [
+const initialCustomers = [
   {
     id: 1,
     image: "https://placeimg.com/64/64/1",
@@ -48,9 +49,49 @@ const customer = [
 ];
 
 class App extends React.Component {
+  state = { customers: initialCustomers };
+
+  componentDidMount() {
+    // console.log(`res : ${res}`);
+    this.getCustomers()
+      // this.getCustomersAxios()
+      .then((res) => console.log("result : " + res))
+      .then((res) => this.setState({ customers: res.json() }))
+      .catch((err) => console.log(err));
+  }
+
+  axios = require("axios");
+  config = {
+    headers: {
+      "Access-Control-Allow-Origin": "http://localhost:5500",
+      "Access-Control-Allow-Credential": true,
+    },
+    method: "GET",
+    url: "http://localhost:5500/api/customers",
+  };
+  getCustomersAxios = async () => {
+    this.axios(this.config)
+      .then((response) => {
+        console.log(JSON.stringify(response.data));
+        return response.data;
+      })
+      .catch((err) => console.log(err));
+  };
+
+  getCustomers = async () => {
+    await fetch("/api/customers")
+      .then((response) => console.log(`response status : ${response.status}`))
+      .then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+    // const response = await fetch("/api/customers");
+    // const body = await response.json();
+    // return body;
+  };
+
   render() {
     const { classes } = this.props;
-
     return (
       <Paper className={classes.root}>
         <Table className={classes.table}>
@@ -65,19 +106,21 @@ class App extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {customer.map((c) => {
-              return (
-                <Customer
-                  key={c.id}
-                  id={c.id}
-                  image={c.image}
-                  name={c.name}
-                  birthday={c.birthday}
-                  gender={c.gender}
-                  job={c.job}
-                />
-              );
-            })}
+            {this.state.customers
+              ? this.state.customers.map((c) => {
+                  return (
+                    <Customer
+                      key={c.id}
+                      id={c.id}
+                      image={c.image}
+                      name={c.name}
+                      birthday={c.birthday}
+                      gender={c.gender}
+                      job={c.job}
+                    />
+                  );
+                })
+              : []}
           </TableBody>
         </Table>
       </Paper>
