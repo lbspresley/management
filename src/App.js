@@ -7,6 +7,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableBody from "@material-ui/core/TableBody";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = (theme) => ({
@@ -18,6 +19,9 @@ const styles = (theme) => ({
   },
   table: {
     minWidth: 1080,
+  },
+  progress: {
+    margin: theme.spacing(2),
   },
 });
 
@@ -49,16 +53,30 @@ const initialCustomers = [
 ];
 
 class App extends React.Component {
-  state = { customers: initialCustomers };
+  state = {
+    customers: "",
+    completed: 0,
+  };
 
   componentDidMount() {
-    // console.log(`res : ${res}`);
+    this.timer = setInterval(this.progress, 20);
+
     this.getCustomers()
-      // this.getCustomersAxios()
       .then((res) => console.log("result : " + res))
       .then((res) => this.setState({ customers: res.json() }))
       .catch((err) => console.log(err));
+
+    this.setState({ customers: initialCustomers });
   }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState({ completed: completed >= 10 ? 0 : completed + 1 });
+  };
 
   axios = require("axios");
   config = {
@@ -106,21 +124,31 @@ class App extends React.Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.state.customers
-              ? this.state.customers.map((c) => {
-                  return (
-                    <Customer
-                      key={c.id}
-                      id={c.id}
-                      image={c.image}
-                      name={c.name}
-                      birthday={c.birthday}
-                      gender={c.gender}
-                      job={c.job}
-                    />
-                  );
-                })
-              : []}
+            {this.state.customers ? (
+              this.state.customers.map((c) => {
+                return (
+                  <Customer
+                    key={c.id}
+                    id={c.id}
+                    image={c.image}
+                    name={c.name}
+                    birthday={c.birthday}
+                    gender={c.gender}
+                    job={c.job}
+                  />
+                );
+              })
+            ) : (
+              <TableRow>
+                <TableCell colSpan="6" align="center">
+                  <CircularProgress
+                    className={classes.progress}
+                    variant="determinate"
+                    value={this.state.completed}
+                  />
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </Paper>
